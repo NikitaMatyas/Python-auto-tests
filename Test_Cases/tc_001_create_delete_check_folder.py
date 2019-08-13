@@ -13,7 +13,7 @@ def test_create_delete_check():
     """
     data = create_folder(disk_url, token, '%2FMusic')
     assert data.status_code == 201, 'Не удалось создать папку на Яндекс диске'
-    data = delete_folder(disk_url, token, '%2FMusic')
+    data = delete_folder(disk_url, token, '%2FMusic', 'true')
     assert data.status_code == 204, 'Не удалось удалить папку на Яндекс диске'
     data = check_folder(disk_url, token, '%2FMusic')
     assert data.status_code == 404, 'Папка существует на диске или не удалось получить данные'
