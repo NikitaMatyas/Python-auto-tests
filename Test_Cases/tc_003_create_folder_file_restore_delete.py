@@ -11,26 +11,26 @@ def test_create_delete_check():
     5. PUT запрос на создание файла в папке на Яндекс диске по указанному пути (Ссылка на мета-информацию о файле)
     6. Проверка на успешное создание файла (Код ответа == 201)
     7. DELETE запрос на помещение файла в папке в корзину по указанному пути (Код ответа без тела ответа)
-    8. Проверка на успешное удаление файла (Код ответа == 204)
+    8. Проверка на успешное удаление файла (Код ответа == 204 или 200)
     9. Восстановление удаленного файла из корзины (Ссылка на мета-информацию о файле)
-    10. Проверка на успешное восстановление файла из корзины (Код ответа == 201; ожидание, если удаление занимает время)
+    10. Проверка на успешное восстановление файла из корзины (Код ответа == 201 или 200)
     11. DELETE запрос на удаление папки на Яндекс диске по указанному пути (Код ответа без тела ответа)
-    12. Проверка на успешное удаление папки (Код ответа == 204)
+    12. Проверка на успешное удаление папки (Код ответа == 204 или 200)
     """
     data = create_folder(disk_url, token, '%2FMusic')
     assert data.status_code == 201, 'Не удалось создать папку на Яндекс диске'
+
     data, url = file_upload_link(disk_url, token, '%2FMusic%2FSong.txt')
     assert data.status_code == 200, 'Не удалось получить URL для загрузки файла на Яндекс диск'
+
     data = file_upload(url)
     assert data.status_code == 201, 'Не удалось загрузить файл по сгенерированному URL'
-    data = delete_file(disk_url, token, '%2FMusic%2FSong.txt', 'false')
-    assert data.status_code == 204, 'Не удалось удалить файл в папке на Яндекс диске'
 
-    data = restore_file(disk_url, token, '%2FSong.txt')
-    if data.status_code != 202:
-        assert data.status_code == 201, 'Не удалось восстановить файл из корзины'
-    else:
-        wait_for_restore(data.json()["href"], token, 20)
+    data = delete_resource(disk_url, token, '%2FMusic%2FSong.txt', 'false', 2)
+    assert data == 204 or data == 200, 'Не удалось удалить файл в папке на Яндекс диске'
 
-    data = delete_folder(disk_url, token, '%2FMusic', 'true')
-    assert data.status_code == 202, 'Не удалось удалить папку на Яндекс диске'
+    data = restore_resource(disk_url, token, '%2FSong.txt', 2)
+    assert data == 201 or data == 200, 'Не удалось восстановить ресурс на Яндекс диске'
+
+    data = delete_resource(disk_url, token, '%2FMusic', 'true', 2)
+    assert data == 204 or data == 200, 'Не удалось удалить папку на Яндекс диске'

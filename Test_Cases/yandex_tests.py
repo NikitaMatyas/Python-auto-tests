@@ -28,8 +28,8 @@ def test_delete_folder():
     1. DELETE запрос на удаление папки на Яндекс диске по указанному пути (Код ответа без тела ответа)
     2. Проверка на успешное удаление папки (Код ответа = 204)
     """
-    data = delete_folder(disk_url, token, '%2FMusic', 'true')
-    assert data.status_code == 204, 'Не удалось удалить папку на Яндекс диске'
+    data = delete_resource(disk_url, token, '%2FMusic', 'true', 5)
+    assert data.status_code == 204 or data.status_code == 200, 'Не удалось удалить папку на Яндекс диске'
 
 
 def test_check_folder_exists():

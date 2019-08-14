@@ -38,17 +38,21 @@ def create_folder(disk_url, token, path):
     return r
 
 
-def delete_folder(disk_url, token, path, del_property):
-    """ Удаление папки на Яндекс Диске
+def delete_resource(disk_url, token, path, del_property, wait_time):
+    """ Удаление ресурса на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
     :param token: Токен авторизации в API Яндекс Диска
-    :param path: Путь к удаляемой папке (например %2FMusic)
+    :param path: Путь к удаляемому ресурсу (например %2FMusic)
     :param del_property: Признак безвозвратного удаления, false - поместить в корзину, true - удалить безвозвратно
+    :param wait_time: Количество секунд, которое нужно ждать между отправкой запросов на подтверждение
     :return: Код ответа без тела ответа (результат запроса)
     """
     r = requests.delete(disk_url + 'resources?path=' + path + '&permanently=' + del_property,
                         headers={'Authorization': token})
-    return r
+    if r.status_code == 202:
+        return wait_for_success(r.json()["href"], token, wait_time)
+    else:
+        return r.status_code
 
 
 def check_folder(disk_url, token, path):
@@ -82,40 +86,33 @@ def file_upload(path):
     return r
 
 
-def delete_file(disk_url, token, path, del_property):
-    """ Удаление файла из папки на Яндекс Диске
+def restore_resource(disk_url, token, path, wait_time):
+    """ Восстановление ресурса из корзины на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
     :param token: Токен авторизации в API Яндекс Диска
-    :param path: Путь по которому необходимо удалить файл (например %2FMusic%2FSong.txt)
-    :param del_property: Признак безвозвратного удаления, false - поместить в корзину, true - удалить безвозвратно
-    :return: Код ответа без тела ответа (результат запроса)
-    """
-    r = requests.delete(disk_url + 'resources?path=' + path + '&permanently=' + del_property,
-                        headers={'Authorization': token})
-    return r
-
-
-def restore_file(disk_url, token, path):
-    """ Восстановление файла из корзины на Яндекс Диске
-    :param disk_url: URL адрес Яндекс Диска
-    :param token: Токен авторизации в API Яндекс Диска
-    :param path: Путь по которому необходимо удалить файл (например %2FMusic%2FSong.txt)
+    :param path: Путь по которому необходимо удалить ресурс (например %2FMusic%2FSong.txt)
+    :param wait_time: Количество секунд, которое нужно ждать между отправкой запросов на подтверждение
     :return: Мета-информация о восстановленом ресурсе (результат запроса)
     """
     r = requests.put(disk_url + 'trash/resources/restore?path=' + path, headers={'Authorization': token})
-    return r
+    if r.status_code == 202:
+        return wait_for_success(r.json()["href"], token, wait_time)
+    else:
+        return r.status_code
 
 
-def wait_for_restore(status_url, token, wait_time):
+def wait_for_success(status_url, token, wait_time):
     """ Ожидание подтверждения восстановления файла из корзины на Яндекс Диске
     :param status_url: URL адрес Яндекс Диска
     :param token: Токен авторизации в API Яндекс Диска
     :param wait_time: Количество секунд, которое нужно ждать между отправкой запросов на подтверждение
-    :return:
+    :return: Код ответа без тела ответа (результат запроса)
     """
-    condition = False
-    while not condition:
-        r = requests.get(status_url, headers={'Authorization': token})
-        if r.json()["status"] == 'success':
-            condition = True
-        time.sleep(wait_time)
+    r = requests.get(status_url, headers={'Authorization': token})
+    if r.status_code == 200:
+        if r.json()["status"] == 'failure':
+            return 'Failure'
+        elif r.json()["status"] == 'in-progress':
+            time.sleep(wait_time)
+            wait_for_success(status_url, token, wait_time)
+    return r.status_code

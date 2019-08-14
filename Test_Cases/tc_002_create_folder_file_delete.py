@@ -17,11 +17,15 @@ def test_create_delete_check():
     """
     data = create_folder(disk_url, token, '%2FMusic')
     assert data.status_code == 201, 'Не удалось создать папку на Яндекс диске'
+
     data, url = file_upload_link(disk_url, token, '%2FMusic%2FSong.txt')
     assert data.status_code == 200, 'Не удалось получить URL для загрузки файла на Яндекс диск'
+
     data = file_upload(url)
     assert data.status_code == 201, 'Не удалось загрузить файл по сгенерированному URL'
-    data = delete_file(disk_url, token, '%2FMusic%2FSong.txt', 'true')
-    assert data.status_code == 204, 'Не удалось удалить файл в папке на Яндекс диске'
-    data = delete_folder(disk_url, token, '%2FMusic', 'true')
-    assert data.status_code == 204, 'Не удалось удалить папку на Яндекс диске'
+
+    data = delete_resource(disk_url, token, '%2FMusic%2FSong.txt', 'true', 5)
+    assert data.status_code == 204 or data.status_code == 200, 'Не удалось удалить файл в папке на Яндекс диске'
+
+    data = delete_resource(disk_url, token, '%2FMusic', 'true', 5)
+    assert data.status_code == 204 or data.status_code == 200, 'Не удалось удалить папку на Яндекс диске'
