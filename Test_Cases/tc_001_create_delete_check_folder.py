@@ -17,5 +17,5 @@ def test_create_delete_check():
     data = delete_resource(disk_url, token, '%2FMusic', 'true', 5)
     assert data.status_code == 204 or data.status_code == 200, 'Не удалось удалить папку на Яндекс диске'
 
-    data = check_folder(disk_url, token, '%2FMusic')
+    data = check_resource(disk_url, token, '%2FMusic')
     assert data.status_code == 404, 'Папка существует на диске или не удалось получить данные'

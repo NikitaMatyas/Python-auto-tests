@@ -1,5 +1,6 @@
 import requests
 import time
+import json
 
 
 def get_disk_url():
@@ -55,11 +56,11 @@ def delete_resource(disk_url, token, path, del_property, wait_time):
         return r.status_code
 
 
-def check_folder(disk_url, token, path):
-    """ Проверка существования папки на Яндекс Диске
+def check_resource(disk_url, token, path):
+    """ Проверка существования ресурса на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
     :param token: Токен авторизации в API Яндекс Диска
-    :param path: Путь к удаляемой папке (например %2FMusic)
+    :param path: Путь к ресурсу (например %2FMusic)
     :return: Мета-информация о запрошенном ресурсе (результат запроса)
     """
     r = requests.get(disk_url + 'resources?path=' + path, headers={'Authorization': token})
