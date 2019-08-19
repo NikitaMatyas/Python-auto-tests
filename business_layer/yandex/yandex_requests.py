@@ -117,3 +117,18 @@ def wait_for_success(status_url, token, wait_time):
             time.sleep(wait_time)
             wait_for_success(status_url, token, wait_time)
     return r.status_code
+
+
+def clear_trash(disk_url, token, path, wait_time):
+    """ Очистка корзины на Яндекс Диске
+    :param disk_url: URL адрес Яндекс Диска
+    :param token: Токен авторизации в API Яндекс Диска
+    :param path: Путь по которому необходимо удалить ресурс (например %2FMusic)
+    :param wait_time: Количество секунд, которое нужно ждать между отправкой запросов на подтверждение
+    :return: Код ответа без тела ответа (результат запроса)
+    """
+    r = requests.delete(disk_url + 'trash/resources?path=' + path, headers={'Authorization': token})
+    if r.status_code == 202:
+        return wait_for_success(r.json()["href"], token, wait_time)
+    else:
+        return r.status_code
