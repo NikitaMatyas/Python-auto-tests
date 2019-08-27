@@ -1,6 +1,5 @@
 import requests
 import time
-import json
 
 
 def get_disk_url():
@@ -102,19 +101,21 @@ def restore_resource(disk_url, token, path, wait_time):
         return r.status_code
 
 
-def wait_for_success(status_url, token, wait_time):
+def wait_for_success(status_url, token, wait_time, interval=0.1):
     """ Ожидание подтверждения восстановления файла из корзины на Яндекс Диске
     :param status_url: URL адрес Яндекс Диска
     :param token: Токен авторизации в API Яндекс Диска
-    :param wait_time: Количество секунд, которое нужно ждать между отправкой запросов на подтверждение
+    :param wait_time: Время, в течении которого необходимо пытаться получить ответ
+    :param interval: Частота, с которой запрос отправляется повторно
     :return: Код ответа без тела ответа (результат запроса)
     """
+    start = time.time()
     r = requests.get(status_url, headers={'Authorization': token})
     if r.status_code == 200:
         if r.json()["status"] == 'failure':
             return 'Failure'
-        elif r.json()["status"] == 'in-progress':
-            time.sleep(wait_time)
+        elif r.json()["status"] == 'in-progress' and time.time() - start < wait_time:
+            time.sleep(interval)
             wait_for_success(status_url, token, wait_time)
     return r.status_code
 
