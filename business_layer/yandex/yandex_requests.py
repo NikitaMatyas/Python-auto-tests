@@ -1,7 +1,9 @@
 import requests
 import time
+import allure
 
 
+@allure.step
 def get_disk_url():
     """ Получение URL адреса Яндекс Диска
     :return: URL адрес Яндекс Диска
@@ -9,6 +11,7 @@ def get_disk_url():
     return 'https://cloud-api.yandex.net/v1/disk/'
 
 
+@allure.step
 def get_token():
     """ Получения токена на авторизацию в API Яндекс Диска
     :return: Значение заголовка Authorization
@@ -17,6 +20,7 @@ def get_token():
     return 'OAuth ' + token
 
 
+@allure.step
 def get_disk_info(disk_url, token):
     """ Получение информации о Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
@@ -27,6 +31,7 @@ def get_disk_info(disk_url, token):
     return r
 
 
+@allure.step
 def create_folder(disk_url, token, path):
     """ Создание папки на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
@@ -38,6 +43,7 @@ def create_folder(disk_url, token, path):
     return r
 
 
+@allure.step
 def delete_resource(disk_url, token, path, del_property, wait_time):
     """ Удаление ресурса на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
@@ -55,6 +61,7 @@ def delete_resource(disk_url, token, path, del_property, wait_time):
         return r.status_code
 
 
+@allure.step
 def check_resource(disk_url, token, path):
     """ Проверка существования ресурса на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
@@ -66,6 +73,7 @@ def check_resource(disk_url, token, path):
     return r
 
 
+@allure.step
 def file_upload_link(disk_url, token, path):
     """ Получение URL адреса для загрузки файла в папку на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
@@ -77,6 +85,7 @@ def file_upload_link(disk_url, token, path):
     return r, r.json()["href"]
 
 
+@allure.step
 def file_upload(path):
     """ Загрузка файла в папку на Яндекс Диске
     :param path: Сгенерированный URL для загрузки файла
@@ -86,6 +95,7 @@ def file_upload(path):
     return r
 
 
+@allure.step
 def restore_resource(disk_url, token, path, wait_time):
     """ Восстановление ресурса из корзины на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
@@ -101,6 +111,7 @@ def restore_resource(disk_url, token, path, wait_time):
         return r.status_code
 
 
+@allure.step
 def wait_for_success(status_url, token, wait_time, interval=0.1):
     """ Ожидание подтверждения восстановления файла из корзины на Яндекс Диске
     :param status_url: URL адрес Яндекс Диска
@@ -120,6 +131,7 @@ def wait_for_success(status_url, token, wait_time, interval=0.1):
     return r.status_code
 
 
+@allure.step
 def clear_trash(disk_url, token, path, wait_time):
     """ Очистка корзины на Яндекс Диске
     :param disk_url: URL адрес Яндекс Диска
