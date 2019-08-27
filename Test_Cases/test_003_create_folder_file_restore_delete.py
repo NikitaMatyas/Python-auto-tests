@@ -2,7 +2,7 @@ from business_layer.yandex.yandex_requests import *
 from framework_core.variables import disk_url, token
 
 
-def test_create_delete_check():
+def test_tc_003():
     """ Создание папки на Яндекс Диске, создание файла внутри папки, удаление файла и папки
     1. PUT запрос на создание папки по указанному пути (Ссылка на мета-информацию о созданной папке)
     2. Проверка на успешное создание папки (Код ответа = 201)
@@ -17,9 +17,9 @@ def test_create_delete_check():
     11. DELETE запрос на удаление папки на Яндекс диске по указанному пути (Код ответа без тела ответа)
     12. Проверка на успешное удаление папки (Код ответа == 204 или 200)
     """
-    path = '%2FMusic'
-    path_2 = '%2FMusic%2FSong.txt'
-    path_3 = '%2FSong.txt'
+    path = '%2FGame'
+    path_2 = '%2FGame%2FWarcraft.txt'
+    path_3 = '%2FWarcraft.txt'
 
     data = create_folder(disk_url, token, path)
     assert data.status_code == 201, 'Не удалось создать папку на Яндекс диске'
