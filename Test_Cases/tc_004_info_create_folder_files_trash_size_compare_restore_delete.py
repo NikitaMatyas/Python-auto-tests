@@ -35,7 +35,7 @@ def test_tc_004():
         assert data.status_code == 201, 'Не удалось загрузить файл по сгенерированному URL'
 
     for i in paths_1:
-        data = delete_resource(disk_url, token, i, "false", 1)
+        data = delete_resource(disk_url, token, i, "false", 5)
         assert data == 204 or data == 200, 'Не удалось поместить ресурс в корзину'
 
     for i in paths_2:
@@ -53,5 +53,5 @@ def test_tc_004():
         data = restore_resource(disk_url, token, i, 1)
         assert data == 201 or data == 200, 'Не удалось восстановить ресурс на Яндекс диске'
 
-    data = delete_resource(disk_url, token, path, "true", 1)
+    data = delete_resource(disk_url, token, path, "true", 5)
     assert data == 204 or data == 200, 'Не удалось удалить папку на Яндекс диске'

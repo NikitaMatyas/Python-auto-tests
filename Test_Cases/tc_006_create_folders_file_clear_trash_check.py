@@ -27,8 +27,8 @@ def test_tc_006():
     data = file_upload(url)
     assert data.status_code == 201, 'Не удалось загрузить файл по сгенерированному URL'
 
-    data = delete_resource(disk_url, token, path, 'false', 1)
+    data = delete_resource(disk_url, token, path, 'false', 5)
     assert data == 204 or data == 200
 
-    data = clear_trash(disk_url, token, path, 1)
+    data = clear_trash(disk_url, token, path, 5)
     assert data == 204 or data == 200

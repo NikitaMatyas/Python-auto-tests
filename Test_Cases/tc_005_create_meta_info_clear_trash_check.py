@@ -33,7 +33,7 @@ def test_tc_005():
     assert data.json()["type"] == "dir"
     assert data.json()["_embedded"]["items"][0]["type"] == "dir"
 
-    data = delete_resource(disk_url, token, path, 'true', 1)
+    data = delete_resource(disk_url, token, path, 'true', 5)
     assert data == 204 or data == 200
 
     data = check_resource(disk_url, token, path)

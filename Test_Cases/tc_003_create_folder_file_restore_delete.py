@@ -30,11 +30,11 @@ def test_create_delete_check():
     data = file_upload(url)
     assert data.status_code == 201, 'Не удалось загрузить файл по сгенерированному URL'
 
-    data = delete_resource(disk_url, token, path_2, 'false', 2)
+    data = delete_resource(disk_url, token, path_2, 'false', 5)
     assert data == 204 or data == 200, 'Не удалось удалить файл в папке на Яндекс диске'
 
-    data = restore_resource(disk_url, token, path_3, 2)
+    data = restore_resource(disk_url, token, path_3, 5)
     assert data == 201 or data == 200, 'Не удалось восстановить ресурс на Яндекс диске'
 
-    data = delete_resource(disk_url, token, path, 'true', 2)
+    data = delete_resource(disk_url, token, path, 'true', 5)
     assert data == 204 or data == 200, 'Не удалось удалить папку на Яндекс диске'
