@@ -2,7 +2,7 @@ certifi==2019.6.16
 chardet==3.0.4
 idna==2.8
 requests==2.22.0
-urllib3==1.25.3
+urllib3==1.25.8
 pytest==5.0.1
 allure-pytest==2.8.0
 allure-python-commons==2.8.0
